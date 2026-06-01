@@ -542,6 +542,200 @@ p.lead {
     margin: 0;
 }
 
+/* Eco Features */
+.metrics-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+    color: var(--sage-green);
+}
+
+.metrics-row span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.metrics-row i {
+    width: 16px;
+    height: 16px;
+}
+
+.par-list {
+    list-style: none;
+    margin-bottom: 24px;
+}
+
+.par-list li {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+}
+
+.par-list li strong {
+    color: var(--sand);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 2px;
+}
+
+.carbon-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 50px;
+    margin-bottom: 16px;
+    font-size: 0.85rem;
+    color: var(--sage-green);
+}
+
+.carbon-badge strong {
+    color: var(--text-light);
+    margin-right: 4px;
+}
+
+.carbon-badge i {
+    width: 16px;
+    height: 16px;
+    color: var(--terracotta);
+}
+
+/* Process Diagram */
+.process-intro {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto 64px;
+}
+
+.diagram-nodes {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.node-item {
+    flex: 1;
+    min-width: 300px;
+    background: rgba(250, 250, 248, 0.8);
+    border: 1px solid rgba(44, 76, 59, 0.1);
+    border-radius: var(--border-radius);
+    padding: 40px 32px;
+    text-align: center;
+    transition: var(--transition-smooth);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.node-item:hover {
+    background: var(--forest-green);
+    transform: translateY(-8px);
+    box-shadow: 0 16px 40px rgba(44, 76, 59, 0.15);
+}
+
+.node-circle {
+    width: 80px;
+    height: 80px;
+    background: var(--warm-beige);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 24px;
+    transition: var(--transition-smooth);
+    color: var(--terracotta);
+}
+
+.node-item:hover .node-circle {
+    background: var(--terracotta);
+    color: var(--text-light);
+    transform: scale(1.1);
+}
+
+.node-item h3 {
+    color: var(--forest-green);
+    margin-bottom: 16px;
+    transition: var(--transition-smooth);
+}
+
+.node-item:hover h3 {
+    color: var(--sand);
+}
+
+.node-content {
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.node-item:hover .node-content {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.node-content p {
+    color: var(--text-light);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+/* Leadership & Community */
+.leadership {
+    background-color: var(--forest-green);
+    color: var(--text-light);
+}
+
+.leadership .section-header h2 {
+    color: var(--sand);
+}
+
+.leadership-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+}
+
+.leadership-card {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 40px;
+    border-radius: var(--border-radius);
+    border-top: 4px solid var(--terracotta);
+    transition: var(--transition-smooth);
+}
+
+.leadership-card:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-8px);
+}
+
+.leadership-card i {
+    color: var(--sand);
+    width: 32px;
+    height: 32px;
+    margin-bottom: 24px;
+}
+
+.leadership-card h3 {
+    color: var(--text-light);
+    margin-bottom: 16px;
+    font-size: 1.5rem;
+}
+
+.leadership-card p {
+    margin-bottom: 0;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.85);
+}
+
 /* Carousel */
 .carousel-container {
     position: relative;

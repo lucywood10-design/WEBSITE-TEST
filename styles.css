@@ -273,8 +273,11 @@ p.lead {
 }
 
 .section-header h2 {
+    font-family: var(--font-handwritten);
+    font-size: clamp(3rem, 6vw, 4.5rem);
     color: var(--forest-green);
     margin-bottom: 16px;
+    font-weight: 700;
 }
 
 .line {

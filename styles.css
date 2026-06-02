@@ -137,21 +137,26 @@ p.lead {
     font-size: 1rem;
     transition: var(--transition-smooth);
     position: relative;
+    padding: 4px 8px;
+    z-index: 1;
 }
 
 .nav-links a::after {
     content: '';
     position: absolute;
-    bottom: -4px;
+    bottom: 4px;
     left: 0;
     width: 0;
-    height: 2px;
+    height: 10px;
     background-color: var(--terracotta);
-    transition: var(--transition-smooth);
+    transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+    z-index: -1;
+    border-radius: 6px;
+    opacity: 0.8;
 }
 
 .nav-links a:hover {
-    color: var(--terracotta);
+    color: var(--text-dark);
 }
 
 .nav-links a:hover::after {
@@ -199,8 +204,8 @@ p.lead {
     align-items: center;
     gap: 12px;
     padding: 16px 32px;
-    background-color: var(--forest-green);
-    color: var(--text-light);
+    background-color: var(--terracotta);
+    color: #fff;
     text-decoration: none;
     border-radius: 50px;
     font-family: var(--font-heading);
@@ -210,9 +215,9 @@ p.lead {
 }
 
 .cta-button:hover {
-    background-color: var(--terracotta);
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(200, 121, 101, 0.3);
+    background-color: var(--forest-green);
+    transform: translateY(-4px) rotate(-1deg);
+    box-shadow: 0 12px 24px rgba(44, 76, 59, 0.3);
 }
 
 /* Hero Background Carousel */
@@ -327,7 +332,7 @@ p.lead {
 /* Projects Section */
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(12, 1fr);
     gap: 40px;
 }
 
@@ -338,6 +343,7 @@ p.lead {
     transition: var(--transition-smooth);
     position: relative;
     background: #fff;
+    grid-column: span 6;
 }
 
 .project-card:hover {
@@ -345,11 +351,28 @@ p.lead {
     box-shadow: 0 24px 50px rgba(0,0,0,0.15);
 }
 
+.project-card:nth-child(3n+1) {
+    grid-column: span 12;
+}
+
+.project-card:nth-child(3n+1) .project-image-wrapper {
+    aspect-ratio: 16 / 7;
+}
+
 .project-image-wrapper {
     position: relative;
     aspect-ratio: 1 / 1;
     width: 100%;
     overflow: hidden;
+}
+
+@media (max-width: 900px) {
+    .project-card, .project-card:nth-child(3n+1) {
+        grid-column: span 12;
+    }
+    .project-card:nth-child(3n+1) .project-image-wrapper {
+        aspect-ratio: 1 / 1;
+    }
 }
 
 .project-image {
@@ -796,7 +819,7 @@ p.lead {
 .slide-up {
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+    transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .slide-up.visible {

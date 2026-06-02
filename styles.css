@@ -215,7 +215,7 @@ p.lead {
     box-shadow: 0 12px 24px rgba(200, 121, 101, 0.3);
 }
 
-/* Hero Background Blobs */
+/* Hero Background Carousel */
 .hero-background {
     position: absolute;
     top: 0;
@@ -224,38 +224,37 @@ p.lead {
     height: 100%;
     z-index: 0;
     overflow: hidden;
-    pointer-events: none;
 }
 
-.blob {
+.hero-carousel-slide {
     position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.6;
-    animation: float 20s infinite ease-in-out;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    animation: hero-crossfade 24s infinite;
 }
 
-.blob-1 {
-    width: 600px;
-    height: 600px;
-    background: var(--sage-green);
-    top: -100px;
-    right: -100px;
+.hero-carousel-slide:nth-child(1) { animation-delay: 0s; }
+.hero-carousel-slide:nth-child(2) { animation-delay: 4s; }
+.hero-carousel-slide:nth-child(3) { animation-delay: 8s; }
+.hero-carousel-slide:nth-child(4) { animation-delay: 12s; }
+.hero-carousel-slide:nth-child(5) { animation-delay: 16s; }
+.hero-carousel-slide:nth-child(6) { animation-delay: 20s; }
+
+@keyframes hero-crossfade {
+    0% { opacity: 0; }
+    4.16% { opacity: 1; }
+    16.66% { opacity: 1; }
+    20.83% { opacity: 0; }
+    100% { opacity: 0; }
 }
 
-.blob-2 {
-    width: 500px;
-    height: 500px;
-    background: var(--sand);
-    bottom: -150px;
-    left: -50px;
-    animation-delay: -10s;
-}
-
-@keyframes float {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(30px, -50px) scale(1.1); }
-    66% { transform: translate(-20px, 20px) scale(0.9); }
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(250, 250, 248, 0.85);
+    z-index: 1;
 }
 
 /* Sections Header */

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+const initPortfolio = () => {
     // Navbar scroll effect
     const navbar = document.querySelector('.navbar');
     
@@ -223,4 +223,10 @@ document.addEventListener('DOMContentLoaded', () => {
         setTimeout(typeCharacter, 450);
     }
 
-});
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPortfolio);
+} else {
+    initPortfolio();
+}

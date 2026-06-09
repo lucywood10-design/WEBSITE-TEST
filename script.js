@@ -34,15 +34,16 @@ const initPortfolio = () => {
         observer.observe(el);
     });
 
-    // Interactive Carousels with Thumbnails
+    // Interactive Carousels with Thumbnails and Expanded Side-by-Side View
     const projectCards = document.querySelectorAll('.project-card');
     
-    projectCards.forEach(card => {
-        const container = card.querySelector('.carousel-container');
-        if (!container) return;
-        
-        const slides = container.querySelectorAll('.carousel-slide');
-        if (slides.length <= 1) return;
+    projectCards.forEach((card, index) => {
+        // Assign column class based on index in a 2-column layout
+        if (index % 2 === 0) {
+            card.classList.add('col-left');
+        } else {
+            card.classList.add('col-right');
+        }
         
         const overlay = card.querySelector('.project-overlay');
         if (!overlay) return;
@@ -50,46 +51,131 @@ const initPortfolio = () => {
         const info = overlay.querySelector('.project-info');
         if (!info) return;
         
-        const thumbContainer = document.createElement('div');
-        thumbContainer.className = 'project-thumbnails';
+        const container = card.querySelector('.carousel-container');
+        const slides = container ? container.querySelectorAll('.carousel-slide') : [];
         
-        slides.forEach((slide, index) => {
-            const thumb = document.createElement('div');
-            thumb.className = 'project-thumbnail';
-            if (index === 0) thumb.classList.add('active');
+        // Dynamically create the large image container
+        const largeView = document.createElement('div');
+        largeView.className = 'project-large-view';
+        const largeImg = document.createElement('img');
+        largeImg.className = 'project-large-img';
+        largeImg.alt = `${card.querySelector('.project-title h4 span')?.textContent || 'Project'} image large view`;
+        
+        // Set initial large image source
+        let initialBg = '';
+        if (slides.length > 0) {
+            initialBg = slides[0].style.backgroundImage;
+        } else {
+            const staticImg = card.querySelector('.project-image');
+            if (staticImg) {
+                initialBg = staticImg.style.backgroundImage;
+            }
+        }
+        
+        if (initialBg) {
+            const imgUrl = initialBg.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+            largeImg.src = imgUrl;
+        }
+        
+        largeView.appendChild(largeImg);
+        overlay.appendChild(largeView);
+        
+        let thumbContainer = null;
+        
+        // Generate thumbnails only if there are multiple slides
+        if (slides.length > 1) {
+            thumbContainer = document.createElement('div');
+            thumbContainer.className = 'project-thumbnails';
             
-            // Get background-image from slide styling
-            thumb.style.backgroundImage = slide.style.backgroundImage;
-            
-            // Navigate on click
-            thumb.addEventListener('click', (e) => {
-                e.stopPropagation();
+            slides.forEach((slide, idx) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'project-thumbnail';
+                if (idx === 0) thumb.classList.add('active');
                 
-                // Add manual mode overrides
-                container.classList.add('manual-control');
+                thumb.style.backgroundImage = slide.style.backgroundImage;
                 
-                // Toggle active slide
-                slides.forEach(s => s.classList.remove('active'));
-                slide.classList.add('active');
+                // Navigate on click
+                thumb.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    
+                    if (container) {
+                        container.classList.add('manual-control');
+                    }
+                    
+                    // Toggle active slide
+                    slides.forEach(s => s.classList.remove('active'));
+                    slide.classList.add('active');
+                    
+                    // Toggle active thumbnail
+                    thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                    thumb.classList.add('active');
+                    
+                    // Update large image
+                    const bgImage = slide.style.backgroundImage;
+                    const imgUrl = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+                    largeImg.src = imgUrl;
+                    
+                    // Expand card
+                    card.classList.add('expanded');
+                });
                 
-                // Toggle active thumbnail
-                thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
-                thumb.classList.add('active');
+                thumbContainer.appendChild(thumb);
             });
             
-            thumbContainer.appendChild(thumb);
+            overlay.appendChild(thumbContainer);
+        }
+        
+        // Handle overlay click to expand (if closed) or collapse (if open)
+        overlay.addEventListener('click', (e) => {
+            // Let links work normally
+            if (e.target.closest('a')) {
+                return;
+            }
+            
+            if (!card.classList.contains('expanded')) {
+                // Expand the card
+                card.classList.add('expanded');
+                if (container) {
+                    container.classList.add('manual-control');
+                    const activeSlide = container.querySelector('.carousel-slide.active');
+                    if (activeSlide) {
+                        const bgImage = activeSlide.style.backgroundImage;
+                        const imgUrl = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
+                        largeImg.src = imgUrl;
+                    }
+                }
+            } else {
+                // Collapse only if clicking outside the interactive text and thumbnails
+                if (e.target.closest('.project-info') || e.target.closest('.project-thumbnails')) {
+                    return;
+                }
+                
+                card.classList.remove('expanded');
+                if (container) {
+                    container.classList.remove('manual-control');
+                    slides.forEach(s => s.classList.remove('active'));
+                }
+                if (thumbContainer) {
+                    thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                    const firstThumb = thumbContainer.querySelector('.project-thumbnail');
+                    if (firstThumb) firstThumb.classList.add('active');
+                }
+            }
         });
         
-        overlay.appendChild(thumbContainer);
-        
-        // Reset to auto-play on mouseleave
+        // Reset to auto-play on mouseleave ONLY if it's not expanded
         card.addEventListener('mouseleave', () => {
-            container.classList.remove('manual-control');
-            slides.forEach(s => s.classList.remove('active'));
-            thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
-            
-            const firstThumb = thumbContainer.querySelector('.project-thumbnail');
-            if (firstThumb) firstThumb.classList.add('active');
+            if (!card.classList.contains('expanded')) {
+                if (container) {
+                    container.classList.remove('manual-control');
+                    slides.forEach(s => s.classList.remove('active'));
+                }
+                if (thumbContainer) {
+                    thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                    const firstThumb = thumbContainer.querySelector('.project-thumbnail');
+                    if (firstThumb) firstThumb.classList.add('active');
+                }
+            }
         });
     });
 

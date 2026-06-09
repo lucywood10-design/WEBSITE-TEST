@@ -34,6 +34,123 @@ const initPortfolio = () => {
         observer.observe(el);
     });
 
+    // In-Card Text and Image Thumbnail Toggle
+    const projectCards = document.querySelectorAll('.project-card');
+    
+    projectCards.forEach(card => {
+        const overlay = card.querySelector('.project-overlay');
+        if (!overlay) return;
+        
+        const info = overlay.querySelector('.project-info');
+        if (!info) return;
+        
+        const container = card.querySelector('.carousel-container');
+        const slides = container ? container.querySelectorAll('.carousel-slide') : [];
+        
+        // 1. Create the large image viewer element (sibling of project-info)
+        const imageView = document.createElement('div');
+        imageView.className = 'project-overlay-image-view';
+        const imageEl = document.createElement('img');
+        imageEl.className = 'project-overlay-image';
+        imageEl.alt = `${card.querySelector('.project-title h4 span')?.textContent || 'Project'} large view`;
+        imageView.appendChild(imageEl);
+        overlay.appendChild(imageView);
+        
+        // 2. Create the vertical thumbnails container
+        const thumbContainer = document.createElement('div');
+        thumbContainer.className = 'project-thumbnails';
+        
+        // 3. Create the Text Thumbnail first
+        const textThumb = document.createElement('div');
+        textThumb.className = 'project-thumbnail text-thumb active'; // Active by default
+        textThumb.title = 'View project description';
+        textThumb.innerHTML = `
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="21" y1="6" x2="3" y2="6"></line>
+                <line x1="21" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="18" x2="3" y2="18"></line>
+            </svg>
+        `;
+        thumbContainer.appendChild(textThumb);
+        
+        // 4. Gather image URLs from slides or static image
+        const imageUrls = [];
+        if (slides.length > 0) {
+            slides.forEach(slide => {
+                const bg = slide.style.backgroundImage;
+                if (bg) {
+                    imageUrls.push(bg.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, ''));
+                }
+            });
+        } else {
+            const staticImg = card.querySelector('.project-image');
+            if (staticImg && staticImg.style.backgroundImage) {
+                imageUrls.push(staticImg.style.backgroundImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, ''));
+            }
+        }
+        
+        // 5. Create Image Thumbnails
+        imageUrls.forEach((url, idx) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'project-thumbnail img-thumb';
+            thumb.style.backgroundImage = `url('${url}')`;
+            thumb.title = `View image ${idx + 1}`;
+            
+            thumb.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Set manual control on container (to pause auto animation)
+                if (container) {
+                    container.classList.add('manual-control');
+                    if (slides[idx]) {
+                        slides.forEach(s => s.classList.remove('active'));
+                        slides[idx].classList.add('active');
+                    }
+                }
+                
+                // Toggle active thumbnail
+                thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
+                
+                // Show Image View, hide Text View
+                imageEl.src = url;
+                info.classList.add('view-hidden');
+                imageView.classList.add('view-active');
+            });
+            
+            thumbContainer.appendChild(thumb);
+        });
+        
+        // Add click listener to Text Thumbnail
+        textThumb.addEventListener('click', (e) => {
+            e.stopPropagation();
+            
+            // Toggle active thumbnail
+            thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+            textThumb.classList.add('active');
+            
+            // Show Text View, hide Image View
+            info.classList.remove('view-hidden');
+            imageView.classList.remove('view-active');
+        });
+        
+        overlay.appendChild(thumbContainer);
+        
+        // 6. Reset to default (Text View active) on mouseleave
+        card.addEventListener('mouseleave', () => {
+            info.classList.remove('view-hidden');
+            imageView.classList.remove('view-active');
+            
+            thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+            textThumb.classList.add('active');
+            
+            if (container) {
+                container.classList.remove('manual-control');
+                slides.forEach(s => s.classList.remove('active'));
+            }
+        });
+    });
+
     // Typewriter effect for Hero heading
     const heroHeading = document.querySelector('.hero-content h1');
     if (heroHeading) {

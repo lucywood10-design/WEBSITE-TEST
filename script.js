@@ -34,141 +34,64 @@ const initPortfolio = () => {
         observer.observe(el);
     });
 
-    // Custom Cursor logic
-    const pencil = document.getElementById('cursor-pencil');
-    const ring = document.getElementById('cursor-ring');
-    const canvas = document.getElementById('cursor-canvas');
-    const ctx = canvas ? canvas.getContext('2d') : null;
+    // Interactive Carousels with Thumbnails
+    const projectCards = document.querySelectorAll('.project-card');
     
-    if (pencil && ring) {
-        let mouseX = -100;
-        let mouseY = -100;
-        let ringX = -100;
-        let ringY = -100;
-        let isMoving = false;
-        let points = [];
-        const maxAge = 35; // How many frames the line lasts
-
-        // Resize canvas to cover screen
-        if (canvas && ctx) {
-            const resizeCanvas = () => {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-            };
-            window.addEventListener('resize', resizeCanvas);
-            resizeCanvas();
-        }
+    projectCards.forEach(card => {
+        const container = card.querySelector('.carousel-container');
+        if (!container) return;
         
-        // Track mouse position
-        window.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
+        const slides = container.querySelectorAll('.carousel-slide');
+        if (slides.length <= 1) return;
+        
+        const overlay = card.querySelector('.project-overlay');
+        if (!overlay) return;
+        
+        const info = overlay.querySelector('.project-info');
+        if (!info) return;
+        
+        const thumbContainer = document.createElement('div');
+        thumbContainer.className = 'project-thumbnails';
+        
+        slides.forEach((slide, index) => {
+            const thumb = document.createElement('div');
+            thumb.className = 'project-thumbnail';
+            if (index === 0) thumb.classList.add('active');
             
-            // Move pencil instantly
-            pencil.style.left = mouseX + 'px';
-            pencil.style.top = mouseY + 'px';
+            // Get background-image from slide styling
+            thumb.style.backgroundImage = slide.style.backgroundImage;
             
-            if (!isMoving) {
-                isMoving = true;
-                pencil.style.opacity = '1';
-                ring.style.opacity = '1';
-            }
-
-            if (canvas && ctx) {
-                points.push({
-                    x: mouseX,
-                    y: mouseY,
-                    age: 0,
-                    isHovering: document.body.classList.contains('cursor-hovering')
-                });
-            }
-        });
-
-        // Hide cursor when leaving window
-        document.addEventListener('mouseleave', () => {
-            pencil.style.opacity = '0';
-            ring.style.opacity = '0';
-            isMoving = false;
-            points = [];
-            if (canvas && ctx) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-            }
-        });
-
-        // Smooth follower animation & trail drawing loop
-        const tick = () => {
-            const speed = 0.15;
-            
-            ringX += (mouseX - ringX) * speed;
-            ringY += (mouseY - ringY) * speed;
-            
-            ring.style.left = ringX + 'px';
-            ring.style.top = ringY + 'px';
-
-            // Draw line trail
-            if (canvas && ctx) {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                if (points.length > 1) {
-                    for (let i = 1; i < points.length; i++) {
-                        const p1 = points[i - 1];
-                        const p2 = points[i];
-
-                        // Fade older segments
-                        const ageRatio = Math.max(0, 1 - (p2.age / maxAge));
-                        const alpha = ageRatio * 0.45; // Peak opacity 0.45
-
-                        ctx.beginPath();
-                        ctx.moveTo(p1.x, p1.y);
-                        ctx.lineTo(p2.x, p2.y);
-
-                        if (p2.isHovering) {
-                            ctx.strokeStyle = `rgba(200, 121, 101, ${alpha})`; // Terracotta
-                        } else {
-                            ctx.strokeStyle = `rgba(44, 76, 59, ${alpha})`; // Forest Green
-                        }
-
-                        ctx.lineWidth = 1.5;
-                        ctx.lineCap = 'round';
-                        ctx.lineJoin = 'round';
-                        ctx.stroke();
-                    }
-                }
-
-                // Increment age of points and remove expired ones
-                points.forEach(p => p.age++);
-                points = points.filter(p => p.age < maxAge);
-            }
-            
-            requestAnimationFrame(tick);
-        };
-        tick();
-
-        // Hover effect on interactive elements
-        const updateHoverState = () => {
-            const interactiveElements = document.querySelectorAll('a, button, .node-item, .project-card, input, textarea, select');
-            interactiveElements.forEach(el => {
-                el.removeEventListener('mouseenter', addHoverClass);
-                el.removeEventListener('mouseleave', removeHoverClass);
-                el.addEventListener('mouseenter', addHoverClass);
-                el.addEventListener('mouseleave', removeHoverClass);
+            // Navigate on click
+            thumb.addEventListener('click', (e) => {
+                e.stopPropagation();
+                
+                // Add manual mode overrides
+                container.classList.add('manual-control');
+                
+                // Toggle active slide
+                slides.forEach(s => s.classList.remove('active'));
+                slide.classList.add('active');
+                
+                // Toggle active thumbnail
+                thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                thumb.classList.add('active');
             });
-        };
-
-        function addHoverClass() {
-            document.body.classList.add('cursor-hovering');
-        }
-
-        function removeHoverClass() {
-            document.body.classList.remove('cursor-hovering');
-        }
-
-        updateHoverState();
-
-        // Re-run hover state update on dynamic content changes
-        const cursorMutationObserver = new MutationObserver(updateHoverState);
-        cursorMutationObserver.observe(document.body, { childList: true, subtree: true });
-    }
+            
+            thumbContainer.appendChild(thumb);
+        });
+        
+        overlay.appendChild(thumbContainer);
+        
+        // Reset to auto-play on mouseleave
+        card.addEventListener('mouseleave', () => {
+            container.classList.remove('manual-control');
+            slides.forEach(s => s.classList.remove('active'));
+            thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+            
+            const firstThumb = thumbContainer.querySelector('.project-thumbnail');
+            if (firstThumb) firstThumb.classList.add('active');
+        });
+    });
 
     // Typewriter effect for Hero heading
     const heroHeading = document.querySelector('.hero-content h1');

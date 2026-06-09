@@ -970,76 +970,139 @@ p.lead {
     }
 }
 
-/* Custom Cursor styles */
-@media (pointer: fine) {
-    /* Hide the default cursor */
-    body, a, button, select, input, textarea, .node-item, .project-card, .cta-button, .contact-link {
-        cursor: none;
+/* Manual Control for Carousels */
+.carousel-container.manual-control .carousel-slide {
+    animation: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.45s ease;
+}
+
+.carousel-container.manual-control .carousel-slide.active {
+    opacity: 1 !important;
+    z-index: 2;
+}
+
+/* Project Thumbnails Layout */
+.project-overlay {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.project-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.project-thumbnails {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex-shrink: 0;
+    max-height: 100%;
+    justify-content: center;
+    padding: 8px 0;
+}
+
+.project-thumbnail {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    opacity: 0.6;
+    transition: var(--transition-smooth);
+}
+
+.project-thumbnail:hover {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.project-thumbnail.active {
+    opacity: 1;
+    border-color: var(--sand);
+    box-shadow: 0 0 10px rgba(217, 197, 178, 0.5);
+}
+
+/* Responsive Thumbnails */
+@media (max-width: 768px) {
+    .project-overlay {
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: stretch;
     }
-
-    .custom-cursor-pencil {
-        width: 24px;
-        height: 24px;
-        position: fixed;
-        pointer-events: none;
-        z-index: 9999;
-        opacity: 0;
-        /* Offset to place the bottom-left tip of the pencil exactly on the cursor point */
-        transform: translate(-2px, -22px);
-        color: var(--forest-green);
-        transition: opacity 0.3s, color 0.2s, transform 0.2s cubic-bezier(0.25, 1, 0.5, 1);
+    
+    .project-thumbnails {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        max-height: none;
+        padding: 16px 0 0;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        margin-top: 16px;
     }
-
-    .custom-cursor-ring {
-        width: 20px;
-        height: 20px;
-        border: 1px dashed var(--sage-green);
-        border-radius: 50%;
-        position: fixed;
-        transform: translate(-50%, -50%);
-        pointer-events: none;
-        z-index: 9998;
-        opacity: 0;
-        transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
-                    height 0.3s cubic-bezier(0.25, 1, 0.5, 1), 
-                    border-color 0.3s, 
-                    background-color 0.3s,
-                    opacity 0.3s;
-    }
-
-    /* Hover State over interactive elements */
-    body.cursor-hovering .custom-cursor-pencil {
-        color: var(--terracotta);
-        /* Rotate the pencil slightly to feel active and pressed-down when drawing */
-        transform: translate(-2px, -22px) rotate(12deg);
-    }
-
-    body.cursor-hovering .custom-cursor-ring {
-        width: 44px;
-        height: 44px;
-        border-color: var(--terracotta);
-        border-style: solid;
-        background-color: rgba(200, 121, 101, 0.05);
-    }
-
-
-
-    .cursor-canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        pointer-events: none;
-        z-index: 9997;
+    
+    .project-thumbnail {
+        width: 38px;
+        height: 38px;
     }
 }
 
-/* For touch devices, make sure default cursor works and custom elements are hidden */
-@media (pointer: coarse) {
-    .custom-cursor-pencil,
-    .custom-cursor-ring,
-    .cursor-canvas {
-        display: none;
-    }
+/* Footer Contact Form */
+.footer-contact-form {
+    margin-top: 24px;
+    max-width: 480px;
+    width: 100%;
+}
+
+.footer-contact-form textarea {
+    width: 100%;
+    height: 80px;
+    border: 1px solid rgba(44, 76, 59, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    resize: none;
+    margin-bottom: 12px;
+    background-color: var(--off-white);
+    color: var(--text-dark);
+    outline: none;
+    transition: var(--transition-smooth);
+}
+
+.footer-contact-form textarea:focus {
+    border-color: var(--forest-green);
+    box-shadow: 0 0 0 2px rgba(44, 76, 59, 0.1);
+}
+
+.contact-submit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background-color: var(--forest-green);
+    color: var(--text-light);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.contact-submit-btn:hover {
+    background-color: var(--terracotta);
+    transform: translateY(-2px);
+}
+
+.contact-submit-btn i {
+    width: 16px;
+    height: 16px;
 }

@@ -1223,8 +1223,10 @@ p.lead {
 .offering-image {
     width: 100%;
     aspect-ratio: 16 / 11;
-    background-size: cover;
+    background-size: contain;
     background-position: center;
+    background-repeat: no-repeat;
+    background-color: #ffffff;
     border-bottom: 1px solid rgba(44, 76, 59, 0.08);
     transition: var(--transition-smooth);
 }
@@ -1277,6 +1279,15 @@ p.lead {
     margin-bottom: 24px;
     border-left: 3px solid var(--terracotta);
     padding-left: 20px;
+}
+
+.offering-questions h3 {
+    font-size: 1.35rem;
+    color: var(--forest-green);
+    margin-bottom: 8px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 .offering-questions p.lead {

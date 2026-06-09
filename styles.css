@@ -453,6 +453,7 @@ p.lead {
     z-index: 10;
     overflow-y: auto;
     scrollbar-width: thin;
+    cursor: pointer;
 }
 
 .project-overlay::-webkit-scrollbar {
@@ -1108,53 +1109,141 @@ p.lead {
     height: 16px;
 }
 
-/* Desktop-only Expanded Side-by-Side Project Viewer */
+body.modal-open {
+    overflow: hidden;
+}
+
+/* Hide thumbnails, large image, and close button by default in standard card view */
+.project-thumbnails,
+.project-large-view,
+.project-close-btn {
+    display: none;
+}
+
+/* Close Button ("X") Styling */
+.project-close-btn {
+    position: fixed;
+    top: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    color: var(--text-light);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    transition: var(--transition-smooth);
+    z-index: 1010; /* Sit above the fullscreen overlay background */
+}
+
+.project-close-btn:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: var(--sand);
+    transform: scale(1.1);
+}
+
+.project-close-btn svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+/* Fullscreen Project Modal Overlay */
+.project-card.expanded .project-overlay {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    background: rgba(44, 76, 59, 0.98); /* 98% solid green to isolate content */
+    padding: 60px 40px;
+    border-radius: 0;
+    opacity: 1; /* Force visible */
+    cursor: default; /* Reset pointer cursor inside expanded layout */
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 60px;
+    box-sizing: border-box;
+    animation: fadeInModal 0.35s ease forwards;
+}
+
+/* Disable hover translations and shadows on the card itself when expanded */
+.project-card.expanded {
+    z-index: 50;
+}
+
+.project-card.expanded:hover {
+    transform: none !important;
+}
+
+.project-card.expanded .project-image-wrapper {
+    overflow: visible !important;
+}
+
+/* Reveal interactive components in expanded modal */
+.project-card.expanded .project-thumbnails {
+    display: flex;
+}
+
+.project-card.expanded .project-large-view {
+    display: block;
+}
+
+.project-card.expanded .project-close-btn {
+    display: flex;
+}
+
+/* Staggered modal entry animations */
+.project-card.expanded .project-info {
+    animation: slideUpModal 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.project-card.expanded .project-large-view {
+    animation: slideUpModal 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.project-card.expanded .project-thumbnails {
+    animation: slideUpModal 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* Large Image View Container */
+.project-large-view {
+    flex: 1.3;
+    height: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    border-radius: 12px;
+    background-color: rgba(0, 0, 0, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.project-large-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Desktop Scrollable Project Text Content */
 @media (min-width: 901px) {
-    /* 1. Expanded Card Container */
-    .project-card.expanded {
-        z-index: 50;
-    }
-    
-    .project-card.expanded:hover {
-        transform: none; /* Disable hover translation when expanded */
-    }
-    
-    .project-card.expanded .project-image-wrapper {
-        overflow: visible !important;
-    }
-    
-    /* 2. Expanded Overlay Container */
-    .project-card.expanded.col-left .project-overlay {
-        left: 0;
-        right: calc(-100% - 40px);
-        width: calc(200% + 40px);
-    }
-    
-    .project-card.expanded.col-right .project-overlay {
-        right: 0;
-        left: calc(-100% - 40px);
-        width: calc(200% + 40px);
-    }
-    
-    .project-card.expanded .project-overlay {
-        flex-direction: row;
-        gap: 40px;
-        align-items: center;
-        justify-content: space-between;
-        overflow-y: hidden; /* Prevent scrolling the entire overlay */
-    }
-    
-    /* 3. Scrollable Project Text Content */
     .project-card.expanded .project-info {
+        flex: 1;
+        max-width: 500px;
         height: 100%;
         max-height: 100%;
         overflow-y: auto;
         display: flex;
         flex-direction: column;
         justify-content: flex-start;
-        padding-right: 16px;
+        padding-right: 20px;
         scrollbar-width: thin;
-        transform: translateY(0); /* Ensure text is in position */
+        margin: 0;
+        transform: translateY(0);
     }
     
     .project-card.expanded .project-info::-webkit-scrollbar {
@@ -1174,29 +1263,7 @@ p.lead {
         background: rgba(255, 255, 255, 0.4);
     }
     
-    /* 4. Large Image Viewer */
-    .project-large-view {
-        display: none;
-        flex: 1.2;
-        height: 100%;
-        overflow: hidden;
-        border-radius: 8px;
-        background-color: rgba(0, 0, 0, 0.15);
-    }
-    
-    .project-card.expanded .project-large-view {
-        display: block;
-        animation: fadeInLarge 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-    }
-    
-    .project-large-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        display: block;
-    }
-    
-    /* 5. Flexbox Order overrides for column alignment */
+    /* Alternating Orders for left and right columns on desktop */
     /* Left Column: Text (1) -> Image (2) -> Thumbnails (3) */
     .project-card.col-left .project-info {
         order: 1;
@@ -1220,13 +1287,67 @@ p.lead {
     }
 }
 
-@keyframes fadeInLarge {
+/* Mobile full screen overlay responsiveness */
+@media (max-width: 900px) {
+    .project-card.expanded .project-overlay {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: stretch;
+        overflow-y: auto;
+        padding: 80px 24px 40px;
+        gap: 30px;
+    }
+    
+    .project-card.expanded .project-info {
+        flex: none;
+        max-width: 100%;
+        height: auto;
+        max-height: none;
+        overflow-y: visible;
+        padding-right: 0;
+    }
+    
+    .project-large-view {
+        flex: none;
+        width: 100%;
+        max-height: 45vh;
+        aspect-ratio: 16 / 10;
+    }
+    
+    .project-card.expanded .project-thumbnails {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .project-close-btn {
+        top: 20px;
+        right: 20px;
+        width: 38px;
+        height: 38px;
+    }
+}
+
+/* Keyframe Animations */
+@keyframes fadeInModal {
     from {
         opacity: 0;
-        transform: scale(0.98);
+        background: rgba(44, 76, 59, 0);
     }
     to {
         opacity: 1;
-        transform: scale(1);
+        background: rgba(44, 76, 59, 0.98);
+    }
+}
+
+@keyframes slideUpModal {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

@@ -34,7 +34,7 @@ const initPortfolio = () => {
         observer.observe(el);
     });
 
-    // Interactive Carousels with Thumbnails and Expanded Side-by-Side View
+    // Interactive Carousels with Thumbnails and Fullscreen Project Viewer Modal
     const projectCards = document.querySelectorAll('.project-card');
     
     projectCards.forEach((card, index) => {
@@ -80,6 +80,18 @@ const initPortfolio = () => {
         largeView.appendChild(largeImg);
         overlay.appendChild(largeView);
         
+        // Dynamically create the close ("X") button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'project-close-btn';
+        closeBtn.ariaLabel = 'Close project details';
+        closeBtn.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        `;
+        overlay.appendChild(closeBtn);
+        
         let thumbContainer = null;
         
         // Generate thumbnails only if there are multiple slides
@@ -115,8 +127,9 @@ const initPortfolio = () => {
                     const imgUrl = bgImage.replace(/^url\(['"]?/, '').replace(/['"]?\)$/, '');
                     largeImg.src = imgUrl;
                     
-                    // Expand card
+                    // Expand card to fullscreen and lock page scroll
                     card.classList.add('expanded');
+                    document.body.classList.add('modal-open');
                 });
                 
                 thumbContainer.appendChild(thumb);
@@ -125,7 +138,7 @@ const initPortfolio = () => {
             overlay.appendChild(thumbContainer);
         }
         
-        // Handle overlay click to expand (if closed) or collapse (if open)
+        // Handle overlay click to expand (only when collapsed)
         overlay.addEventListener('click', (e) => {
             // Let links work normally
             if (e.target.closest('a')) {
@@ -133,8 +146,10 @@ const initPortfolio = () => {
             }
             
             if (!card.classList.contains('expanded')) {
-                // Expand the card
+                // Expand the card to fullscreen and lock scroll
                 card.classList.add('expanded');
+                document.body.classList.add('modal-open');
+                
                 if (container) {
                     container.classList.add('manual-control');
                     const activeSlide = container.querySelector('.carousel-slide.active');
@@ -144,22 +159,24 @@ const initPortfolio = () => {
                         largeImg.src = imgUrl;
                     }
                 }
-            } else {
-                // Collapse only if clicking outside the interactive text and thumbnails
-                if (e.target.closest('.project-info') || e.target.closest('.project-thumbnails')) {
-                    return;
-                }
-                
-                card.classList.remove('expanded');
-                if (container) {
-                    container.classList.remove('manual-control');
-                    slides.forEach(s => s.classList.remove('active'));
-                }
-                if (thumbContainer) {
-                    thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
-                    const firstThumb = thumbContainer.querySelector('.project-thumbnail');
-                    if (firstThumb) firstThumb.classList.add('active');
-                }
+            }
+        });
+        
+        // Handle close button click explicitly to collapse the modal
+        closeBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent overlay click event propagation
+            
+            card.classList.remove('expanded');
+            document.body.classList.remove('modal-open');
+            
+            if (container) {
+                container.classList.remove('manual-control');
+                slides.forEach(s => s.classList.remove('active'));
+            }
+            if (thumbContainer) {
+                thumbContainer.querySelectorAll('.project-thumbnail').forEach(t => t.classList.remove('active'));
+                const firstThumb = thumbContainer.querySelector('.project-thumbnail');
+                if (firstThumb) firstThumb.classList.add('active');
             }
         });
         
@@ -231,6 +248,19 @@ const initPortfolio = () => {
         
         setTimeout(typeCharacter, 450);
     }
+
+    // Escape key listener to close active modal
+    window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const expandedCard = document.querySelector('.project-card.expanded');
+            if (expandedCard) {
+                const closeBtn = expandedCard.querySelector('.project-close-btn');
+                if (closeBtn) {
+                    closeBtn.click();
+                }
+            }
+        }
+    });
 
 };
 

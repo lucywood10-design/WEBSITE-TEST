@@ -203,6 +203,27 @@ const initPortfolio = () => {
         
         setTimeout(typeCharacter, 450);
     }
+    // What Can I Offer You Interactive Tab Switcher
+    const offeringCards = document.querySelectorAll('.offering-card');
+    const offeringPanes = document.querySelectorAll('.offering-detail-pane');
+    
+    offeringCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove active classes
+            offeringCards.forEach(c => c.classList.remove('active'));
+            offeringPanes.forEach(pane => pane.classList.remove('active'));
+            
+            // Add active class to clicked card
+            card.classList.add('active');
+            
+            // Show corresponding details pane
+            const targetId = card.getAttribute('data-target');
+            const targetPane = document.getElementById(targetId);
+            if (targetPane) {
+                targetPane.classList.add('active');
+            }
+        });
+    });
 
 };
 

@@ -1189,4 +1189,172 @@ p.lead {
     }
 }
 
+/* What Can I Offer You Section */
+.offerings-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.offering-card {
+    background-color: var(--off-white);
+    border: 1px solid rgba(44, 76, 59, 0.12);
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    cursor: pointer;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+}
+
+.offering-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 20px rgba(44, 76, 59, 0.08);
+    border-color: var(--forest-green);
+}
+
+.offering-card.active {
+    border-color: var(--terracotta);
+    box-shadow: 0 10px 25px rgba(200, 121, 101, 0.12);
+    background-color: #ffffff;
+}
+
+.offering-image {
+    width: 100%;
+    aspect-ratio: 16 / 11;
+    background-size: cover;
+    background-position: center;
+    border-bottom: 1px solid rgba(44, 76, 59, 0.08);
+    transition: var(--transition-smooth);
+}
+
+.offering-card:hover .offering-image {
+    transform: scale(1.02);
+}
+
+.offering-title {
+    padding: 16px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.offering-title h3 {
+    margin: 0;
+    font-size: 1.05rem;
+    font-family: var(--font-heading);
+    color: var(--forest-green);
+    font-weight: 600;
+}
+
+.offering-card.active .offering-title h3 {
+    color: var(--terracotta);
+}
+
+/* Detail Panel Styling */
+.offering-details-container {
+    background-color: #ffffff;
+    border: 1px solid rgba(44, 76, 59, 0.1);
+    border-radius: var(--border-radius);
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(44, 76, 59, 0.02);
+    min-height: 250px;
+}
+
+.offering-detail-pane {
+    display: none;
+}
+
+.offering-detail-pane.active {
+    display: block;
+    animation: fadeInOfferingDetail 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+.offering-questions {
+    margin-bottom: 24px;
+    border-left: 3px solid var(--terracotta);
+    padding-left: 20px;
+}
+
+.offering-questions p.lead {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-dark);
+    font-family: var(--font-body);
+    font-weight: 400;
+    margin: 0;
+}
+
+.offering-help h4 {
+    font-size: 1.25rem;
+    color: var(--forest-green);
+    margin-bottom: 16px;
+    font-family: var(--font-heading);
+    font-weight: 600;
+}
+
+.help-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.help-list li {
+    position: relative;
+    padding-left: 28px;
+    font-size: 1.05rem;
+    color: #444;
+    line-height: 1.5;
+}
+
+.help-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0px;
+    color: var(--forest-green);
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Responsive grid for offerings */
+@media (max-width: 900px) {
+    .offerings-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+}
+
+@media (max-width: 600px) {
+    .offerings-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+    
+    .offering-details-container {
+        padding: 24px;
+    }
+    
+    .offering-questions p.lead {
+        font-size: 1.05rem;
+    }
+}
+
+@keyframes fadeInOfferingDetail {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 

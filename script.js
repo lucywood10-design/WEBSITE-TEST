@@ -225,6 +225,64 @@ const initPortfolio = () => {
         });
     });
 
+    // Contact Form AJAX submission
+    const contactForm = document.querySelector('.footer-contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const submitBtn = contactForm.querySelector('.contact-submit-btn');
+            const originalBtnHTML = submitBtn.innerHTML;
+            
+            // Disable button and show loading state
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending... <i data-feather="loader" class="spin"></i>';
+            if (window.feather) {
+                feather.replace();
+            }
+            
+            const formData = new FormData(contactForm);
+            const data = Object.fromEntries(formData);
+            data['_subject'] = 'New Contact Form Submission - LW Designs';
+            
+            try {
+                const response = await fetch('https://formsubmit.co/ajax/lucy@lwdesigns.co.uk', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    // Success state
+                    contactForm.innerHTML = `
+                        <div class="contact-success-msg" style="text-align: center; padding: 2rem 0; color: #D9C5B2;">
+                            <i data-feather="check-circle" style="width: 48px; height: 48px; stroke: #C87965; margin-bottom: 1rem;"></i>
+                            <h4 style="font-family: 'Playfair Display', serif; font-size: 1.5rem; margin-bottom: 0.5rem; color: #F4F1EA;">Thank You!</h4>
+                            <p style="font-size: 0.95rem; line-height: 1.6; color: #D9C5B2;">Your message has been sent successfully. Lucy will get back to you shortly.</p>
+                        </div>
+                    `;
+                    if (window.feather) {
+                        feather.replace();
+                    }
+                } else {
+                    throw new Error('Form response not OK');
+                }
+            } catch (error) {
+                console.error(error);
+                // Reset button on failure and alert user
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnHTML;
+                if (window.feather) {
+                    feather.replace();
+                }
+                alert('Oops! There was a problem sending your message. Please try again or email directly at lucy@lwdesigns.co.uk.');
+            }
+        });
+    }
+
 };
 
 if (document.readyState === 'loading') {

@@ -860,6 +860,7 @@ p.lead {
 .carousel-7 .carousel-slide { animation: crossfade-7 28s infinite; }
 .carousel-8 .carousel-slide { animation: crossfade-8 32s infinite; }
 .carousel-9 .carousel-slide { animation: crossfade-9 36s infinite; }
+.carousel-10 .carousel-slide { animation: crossfade-10 40s infinite; }
 
 @keyframes crossfade-2 {
     0% { opacity: 0; }
@@ -915,6 +916,14 @@ p.lead {
     2.77% { opacity: 1; }
     11.11% { opacity: 1; }
     13.88% { opacity: 0; }
+    100% { opacity: 0; }
+}
+
+@keyframes crossfade-10 {
+    0% { opacity: 0; }
+    2.5% { opacity: 1; }
+    10% { opacity: 1; }
+    12.5% { opacity: 0; }
     100% { opacity: 0; }
 }
 

@@ -1229,12 +1229,20 @@ p.lead {
     color: var(--sand);
 }
 
-.offerings-grid {
+.offerings-wrapper {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    grid-template-areas:
+        "card-precon card-construction card-sustainability card-homeowner"
+        "details details details details";
     gap: 24px;
     margin-bottom: 40px;
 }
+
+.offering-card[data-target="offering-precon"] { grid-area: card-precon; }
+.offering-card[data-target="offering-construction"] { grid-area: card-construction; }
+.offering-card[data-target="offering-sustainability"] { grid-area: card-sustainability; }
+.offering-card[data-target="offering-homeowner"] { grid-area: card-homeowner; }
 
 .offering-card {
     background-color: rgba(255, 255, 255, 0.04);
@@ -1282,17 +1290,15 @@ p.lead {
 }
 
 /* Detail Panel Styling */
-.offering-details-container {
+.offering-detail-pane {
+    display: none;
     background-color: #ffffff;
     border: 1px solid rgba(44, 76, 59, 0.1);
     border-radius: var(--border-radius);
     padding: 40px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
     min-height: 250px;
-}
-
-.offering-detail-pane {
-    display: none;
+    grid-area: details;
 }
 
 .offering-detail-pane.active {
@@ -1352,20 +1358,39 @@ p.lead {
 
 /* Responsive grid for offerings */
 @media (max-width: 900px) {
-    .offerings-grid {
+    .offerings-wrapper {
         grid-template-columns: repeat(2, 1fr);
+        grid-template-areas:
+            "card-precon card-construction"
+            "card-sustainability card-homeowner"
+            "details details";
         gap: 20px;
     }
 }
 
 @media (max-width: 600px) {
-    .offerings-grid {
-        grid-template-columns: 1fr;
+    .offerings-wrapper {
+        display: flex;
+        flex-direction: column;
         gap: 16px;
     }
     
-    .offering-details-container {
+    /* Interleave cards and active details pane on mobile */
+    .offering-card[data-target="offering-precon"] { order: 1; }
+    #offering-precon { order: 2; }
+    
+    .offering-card[data-target="offering-construction"] { order: 3; }
+    #offering-construction { order: 4; }
+    
+    .offering-card[data-target="offering-sustainability"] { order: 5; }
+    #offering-sustainability { order: 6; }
+    
+    .offering-card[data-target="offering-homeowner"] { order: 7; }
+    #offering-homeowner { order: 8; }
+    
+    .offering-detail-pane {
         padding: 24px;
+        min-height: auto;
     }
     
     .offering-questions p.lead {
